@@ -4,7 +4,11 @@ import java.io.IOException;
  * Created by wjdbr on 15/6/21.
  */
 public interface GraphInterface {
-    void createGraph(int v,int e);
+    enum GraphType {
+        directed,
+        undirected
+    }
+    void initialize(int v,int e);
     void createGraph(String fileName) throws IOException;
     void print();
     int V();
