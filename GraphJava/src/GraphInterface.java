@@ -1,7 +1,4 @@
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by wjdbr on 15/6/21.
@@ -17,4 +14,5 @@ public interface GraphInterface {
     boolean isAdjacent(int v1,int v2);
     void dfs(int v);
     void bfs(int v);
+    void shortestPath(int s,int t);
 }

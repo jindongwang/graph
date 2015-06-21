@@ -7,8 +7,8 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-        System.out.println("Hello World");
-        Graph g = new Graph();
+        System.out.println("Graph implementation in Java");
+        Graph g = new Graph(GraphType.directed);
         g.createGraph("./files/Graph");
         g.print();
         for (int i = 0; i < g.V(); i++) {

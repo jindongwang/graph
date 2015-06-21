@@ -10,11 +10,22 @@ import java.util.Queue;
 /**
  * Created by wjdbr on 15/6/21.
  */
+enum GraphType {
+    directed,
+    undirected
+}
+
 public class Graph implements GraphInterface{
     private int V;
     private int E;
     private ArrayList<ArrayList<Integer>> adj;
-
+    private GraphType type;
+    public Graph(GraphType t) {
+        this.type = t;
+    }
+    public Graph() {
+        this.type = GraphType.undirected;
+    }
     @Override
     public void createGraph(int v,int e) {
         this.V = v;
@@ -39,7 +50,9 @@ public class Graph implements GraphInterface{
                 int v1 = Integer.parseInt(lines[0]);
                 int v2 = Integer.parseInt(lines[1]);
                 this.adj.get(v1).add(v2);
-                this.adj.get(v2).add(v1);
+                if (type == GraphType.undirected) {
+                    this.adj.get(v2).add(v1);
+                }
             }
             br.close();
         } catch (FileNotFoundException e) {
@@ -119,6 +132,11 @@ public class Graph implements GraphInterface{
                 queue.add(integer);
             });
         }
+
+    }
+
+    @Override
+    public void shortestPath(int s, int t) {
 
     }
 
