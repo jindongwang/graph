@@ -5,40 +5,29 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by wjdbr on 15/6/21.
+ * Created by wjdbr on 15/6/22.
  */
-
-class Node {
-    Integer vertex;
-    float weight;
-
-    public Node(Integer v,float w) {
-        this.vertex = v;
-        this.weight = w;
-    }
-}
-
-public class AdjGraph implements Graph{
+public class MatrixGraph implements Graph{
     private int V;
     private int E;
-    private ArrayList<ArrayList<Node>> adj;
     private Graph.GraphType type;
-
-    public AdjGraph(Graph.GraphType t) {
+    private float[][] mat;
+    public MatrixGraph(Graph.GraphType t) {
         this.type = t;
     }
-    public AdjGraph() {
+    public MatrixGraph() {
         this.type = Graph.GraphType.undirected;
     }
 
     @Override
-    public void initialize(int v,int e) {
+    public void initialize(int v, int e) {
         this.V = v;
         this.E = e;
-        this.adj = new ArrayList<>(v);
+        this.mat = new float[v][v];
         for (int i = 0; i < v; i++) {
-            ArrayList<Node> line = new ArrayList<>();
-            adj.add(line);
+            for (int j = 0; j < v; j++) {
+                this.mat[i][j] = INFINITY;
+            }
         }
     }
 
@@ -55,9 +44,9 @@ public class AdjGraph implements Graph{
                 int v1 = Integer.parseInt(lines[0]);
                 int v2 = Integer.parseInt(lines[1]);
                 int w = Integer.parseInt(lines[2]);
-                this.adj.get(v1).add(new Node(v2,w));
+                this.mat[v1][v2] = w;
                 if (type == GraphType.undirected) {
-                    this.adj.get(v2).add(new Node(v1,w));
+                    this.mat[v2][v1] = w;
                 }
             }
             br.close();
@@ -70,9 +59,11 @@ public class AdjGraph implements Graph{
     public void print() {
         System.out.println("V:" + this.V);
         System.out.println("E:" + this.E);
-        for (int i = 0; i < this.V; i++) {
-            for (int j = 0; j < this.adj.get(i).size(); j++) {
-                System.out.println(i + " " + this.adj.get(i).get(j).vertex + " " + this.adj.get(i).get(j).weight);
+        for (int i = 0; i < this.V(); i++) {
+            for (int j = 0; j < this.V(); j++) {
+                if (mat[i][j] != INFINITY) {
+                    System.out.println(i + " " + j + " " + this.mat[i][j]);
+                }
             }
         }
     }
@@ -89,15 +80,22 @@ public class AdjGraph implements Graph{
 
     @Override
     public int degree(int v) {
-        return adj.get(v).size();
+        int count = 0;
+        for (int i = 0; i < this.V(); i++) {
+            if (this.mat[v][i] != INFINITY) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
     public int maxDegree() {
         int max = 0;
         for (int i = 0; i < this.V(); i++) {
-            if (max < this.adj.get(i).size()) {
-                max = this.adj.get(i).size();
+            int degree = this.degree(i);
+            if (max < degree) {
+                max = degree;
             }
         }
         return max;
@@ -105,36 +103,29 @@ public class AdjGraph implements Graph{
 
     @Override
     public float weight(int v1, int v2) {
-        for (Node node : adj.get(v1)) {
-            if (node.vertex == v2) {
-                return node.weight;
-            }
-        }
-        return INFINITY;
+        return mat[v1][v2];
     }
 
     @Override
     public boolean isAdjacent(int v1, int v2) {
-        ArrayList<Node> nodeList = adj.get(v1);
-        for (Node node : nodeList) {
-            if (node.vertex == v2) {
-                return true;
-            }
-        }
-        return false;
+        return weight(v1, v2) != INFINITY;
     }
 
     @Override
     public void dfs(int v) {
-        boolean[] visited = new boolean[this.V()];
-        dfsMethod(v,visited);
+        boolean[] mark = new boolean[this.V()];
+        this.dfsMethod(v,mark);
     }
+
     private void dfsMethod(int v, boolean[] mark) {
         mark[v] = true;
-        adj.get(v).stream().filter(node -> !mark[node.vertex]).forEach(node -> {
-            System.out.print(node.vertex + " ");
-            dfsMethod(node.vertex, mark);
-        });
+        for (int i = 0; i < this.V(); i++) {
+            if (isAdjacent(v,i) && !mark[i]) {
+                mark[i] = true;
+                dfsMethod(i,mark);
+                System.out.print(i + " ");
+            }
+        }
     }
 
     @Override
@@ -145,11 +136,13 @@ public class AdjGraph implements Graph{
         visited[v] = true;
         while (!queue.isEmpty()) {
             int d = queue.remove();
-            adj.get(d).stream().filter(node -> !visited[node.vertex]).forEach(node -> {
-                visited[node.vertex] = true;
-                System.out.print(node.vertex + " ");
-                queue.add(node.vertex);
-            });
+            for (int i = 0;i < this.V();i++) {
+                if (this.isAdjacent(v,i) && !visited[i]) {
+                    visited[i] = true;
+                    System.out.print(i + " ");
+                    queue.add(i);
+                }
+            }
         }
     }
 
@@ -201,5 +194,4 @@ public class AdjGraph implements Graph{
 
         return dist[t];
     }
-
 }

@@ -5,7 +5,7 @@ import java.io.IOException;
  */
 
 public interface Graph {
-    public static final float INFINITY = 9999;
+    float INFINITY = 9999;
 
     enum GraphType {
         directed,
