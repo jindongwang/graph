@@ -3,8 +3,7 @@ import java.io.IOException;
 /**
  * Created by wjdbr on 15/6/21.
  */
-
-public interface Graph {
+interface Graph {
     float INFINITY = 9999;
 
     enum GraphType {
