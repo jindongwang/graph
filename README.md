@@ -8,7 +8,9 @@
 ##创建图
 		Graph g = new AdjGraph(Graph.GraphType.directed);
         g.createGraph("./files/Graph");
-        'or'
+  
+  or
+  
         Graph g = new MatrixGraph(Graph.GraphType.directed);
         g.createGraph("./files/Graph");
 ##打印图
